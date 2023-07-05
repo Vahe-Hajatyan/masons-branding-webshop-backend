@@ -1,12 +1,25 @@
 import express from "express";
 import mongoose from "mongoose";
 import cors from "cors";
-import Product from "./module/Product.model.js";
-import { postCreateValidator } from "./validations.js";
+import {
+  loginValidator,
+  postCreateValidator,
+  registerValidator,
+} from "./validations.js";
+import {
+  create,
+  getTshirt,
+  getAccessories,
+  getSneakers,
+  getTrousers,
+  getOne,
+} from "./controller/productController.js";
+import { login, register, me } from "./controller/userController.js";
+import { handlerValidationError } from "./utils/handlerValidationError.js";
+import authCheck from "./utils/authCheck.js";
 mongoose
   .connect(
-    "mongodb+srv://vahe:janvahejan@cluster0.mesosls.mongodb.net/blog?retryWrites=true&w=majority",
-    { useNewUrlParser: true }
+    "mongodb+srv://vahe:janvahejan@cluster0.mesosls.mongodb.net/blog?retryWrites=true&w=majority"
   )
   .then(() => console.log("DB ok"))
   .catch((err) => console.log("DB error " + err));
@@ -17,43 +30,16 @@ const port = process.env.PORT ?? 3333;
 app.use(cors());
 app.use(express.json());
 
-app.get("/", (req, res) => {
-  try {
-    Product.find({})
-      .then((data) => {
-        res.json(data);
-      })
-      .catch((error) => {
-        res.status(408).json({ error });
-      });
-  } catch (error) {
-    res.json({ error });
-  }
-});
+app.get("/tshirt", getTshirt);
+app.get("/trousers", getTrousers);
+app.get("/sneakers", getSneakers);
+app.get("/accessories", getAccessories);
+app.get("/product/:id", getOne);
+app.post("/product", postCreateValidator, handlerValidationError, create);
 
-app.post("/product", postCreateValidator, async (req, res) => {
-  const body = req.body;
-  try {
-    const newPost = new Product({
-      myFile: body.myFile,
-      comment: body.comment,
-      recommended: body.recommended,
-      favorites: body.favorites,
-      basket: body.basket,
-      price: body.price,
-      maxCount: body.maxCount,
-      name: body.name,
-      teg: body.teg.split(","),
-      size: body.size.split(","),
-      color: body.color.split(","),
-      description: body.description,
-    });
-    const post = await newPost.save();
-    res.status(201).json({ msg: "New image uploaded...!", post });
-  } catch (error) {
-    res.status(409).json({ message: error.message });
-  }
-});
+app.post("/register", registerValidator, handlerValidationError, register);
+app.post("/login", loginValidator, handlerValidationError, login);
+app.get("/me", authCheck, me);
 
 app.listen(port, (err) => {
   if (err) {

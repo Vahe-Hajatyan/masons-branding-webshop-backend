@@ -52,7 +52,10 @@ const productSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  type: {
+    type: String,
+    required: true,
+  },
 });
 
-export default mongoose.models.Product ||
-  mongoose.model("product", productSchema);
+export default mongoose.model("product", productSchema);
