@@ -6,8 +6,7 @@ const productSchema = new mongoose.Schema({
     required: true,
   },
   comment: {
-    type: Array,
-    default: [],
+    type: [Object],
   },
   recommended: {
     type: Array,

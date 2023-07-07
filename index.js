@@ -13,6 +13,8 @@ import {
   getSneakers,
   getTrousers,
   getOne,
+  setComment,
+  removeComment,
 } from "./controller/productController.js";
 import { login, register, me } from "./controller/userController.js";
 import { handlerValidationError } from "./utils/handlerValidationError.js";
@@ -30,12 +32,17 @@ const port = process.env.PORT ?? 3333;
 app.use(cors());
 app.use(express.json());
 
+app.post("/product", postCreateValidator, handlerValidationError, create);
+
 app.get("/tshirt", getTshirt);
 app.get("/trousers", getTrousers);
 app.get("/sneakers", getSneakers);
 app.get("/accessories", getAccessories);
+
 app.get("/product/:id", getOne);
-app.post("/product", postCreateValidator, handlerValidationError, create);
+
+app.post("/comment/:id", setComment);
+app.post("/comment/remove/:id", removeComment);
 
 app.post("/register", registerValidator, handlerValidationError, register);
 app.post("/login", loginValidator, handlerValidationError, login);
