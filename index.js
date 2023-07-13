@@ -15,8 +15,18 @@ import {
   getOne,
   setComment,
   removeComment,
+  removeProduct,
+  getCheap,
 } from "./controller/productController.js";
-import { login, register, me } from "./controller/userController.js";
+import {
+  login,
+  register,
+  me,
+  setBasket,
+  removeBasket,
+  setFavorite,
+  removeFavorite,
+} from "./controller/userController.js";
 import { handlerValidationError } from "./utils/handlerValidationError.js";
 import authCheck from "./utils/authCheck.js";
 mongoose
@@ -33,20 +43,28 @@ app.use(cors());
 app.use(express.json());
 
 app.post("/product", postCreateValidator, handlerValidationError, create);
+app.delete("/product/:id", removeProduct);
 
+app.get("/cheap", getCheap);
 app.get("/tshirt", getTshirt);
 app.get("/trousers", getTrousers);
 app.get("/sneakers", getSneakers);
 app.get("/accessories", getAccessories);
 
-app.get("/product/:id", getOne);
+app.get("/product/:id", authCheck, getOne);
 
 app.post("/comment/:id", setComment);
-app.post("/comment/remove/:id", removeComment);
+app.delete("/comment/:id", removeComment);
 
 app.post("/register", registerValidator, handlerValidationError, register);
 app.post("/login", loginValidator, handlerValidationError, login);
 app.get("/me", authCheck, me);
+
+app.post("/basket", authCheck, setBasket);
+app.delete("/basket", authCheck, removeBasket);
+
+app.post("/favorite", authCheck, setFavorite);
+app.delete("/favorite", authCheck, removeFavorite);
 
 app.listen(port, (err) => {
   if (err) {

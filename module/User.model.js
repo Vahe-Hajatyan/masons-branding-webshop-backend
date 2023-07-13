@@ -17,5 +17,11 @@ const userSchema = mongoose.Schema({
   avatar: {
     type: String,
   },
+  basket: {
+    type: [Object],
+  },
+  favorite: {
+    type: [Object],
+  },
 });
 export default mongoose.model("User", userSchema);

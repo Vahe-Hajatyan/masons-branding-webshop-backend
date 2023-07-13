@@ -16,10 +16,6 @@ const productSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
-  basket: {
-    type: Boolean,
-    default: false,
-  },
   price: {
     type: Number,
     default: 0,
